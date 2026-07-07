@@ -1,6 +1,6 @@
 # Telecom Agent
 
-**Telecom Agent** là một hệ thống trợ lý AI chuyên dụng dành cho lĩnh vực viễn thông (Viettel Digital Talent). Hệ thống có khả năng tự động giám sát, chẩn đoán lỗi (self-healing diagnostics), khám phá dịch vụ tự động (auto-discovery) và điều chỉnh chính sách cảnh báo linh hoạt (adaptive policy tuning) dựa trên dữ liệu telemetry.
+**Telecom Agent** là một hệ thống AI Agent dành cho lĩnh vực viễn thông. Hệ thống có khả năng tự động giám sát, chẩn đoán lỗi (self-healing diagnostics), khám phá dịch vụ tự động (auto-discovery) và điều chỉnh chính sách cảnh báo linh hoạt (adaptive policy tuning) dựa trên dữ liệu telemetry.
 
 ## 🌟 Tính năng chính
 
@@ -102,27 +102,29 @@ Frontend sẽ chạy tại: `http://localhost:5173` (hoặc port được hiển
 Đảm bảo bạn đã cấu hình file `.env` tại thư mục gốc của dự án. Một số biến quan trọng cần có (tham khảo `.env.example` nếu có):
 
 ```env
+# LLM
+GEMINI_MODEL=gemini-3.1-flash-lite
+GOOGLE_API_KEY=google-api-key
+GROQ_MODEL=llama-3.1-8b-instant
+GROQ_API_KEY=groq-api-key
+
+# Langfuse
+LANGFUSE_SECRET_KEY=langfuse-secret-key
+LANGFUSE_PUBLIC_KEY=langfuse-public-key
+LANGFUSE_BASE_URL=langfuse-base-url
+
+# Mật khẩu của các node mà mình định nghĩa nó để có thể lấy được bằng credential key trong db
+PASS_LOCAL_TEST=your_pass_local_test
+
+# Keycloak
+KEYCLOAK_URL=http://localhost:8080
+REALM_NAME=your_realm_name
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
+ADMIN_CLIENT_ID=your_admin_client_id
+ADMIN_CLIENT_SECRET=your_admin_client_secret
+KEYCLOAK_CALLBACK_URL=http://localhost:5173
+
 # MongoDB
 MONGODB_URL=mongodb://localhost:27017
-
-# Langfuse (Observability)
-LANGFUSE_PUBLIC_KEY=your_langfuse_public_key
-LANGFUSE_SECRET_KEY=your_langfuse_secret_key
-LANGFUSE_HOST=your_langfuse_host
-
-# LLM API Keys
-OPENAI_API_KEY=your_openai_api_key
 ```
-
-## 🧪 Kiểm thử (Testing)
-
-Dự án bao gồm các kịch bản kiểm thử trong thư mục `tests/`. Để chạy kiểm thử tương tác với hạ tầng giả lập:
-
-```bash
-# Đảm bảo mock-target-node đang chạy qua docker-compose
-python -m pytest tests/
-```
-
-## 📄 Giấy phép
-
-[Thêm thông tin License nếu cần, ví dụ: MIT License]
