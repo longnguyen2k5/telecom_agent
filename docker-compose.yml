@@ -1,0 +1,70 @@
+services:
+  agent-mongo:
+    image: mongo:6.0
+    container_name: telecom_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - telecom-net
+
+  keycloak-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - telecom-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HOSTNAME: localhost
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    # Thêm --import-realm để nó load file từ volume đã mount
+    command: start-dev --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./infrastructure/keycloak/configs:/opt/keycloak/data/import
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    networks:
+      - telecom-net
+
+  mock-target-node:
+    build: 
+      context: ./infrastructure/mock_target_node
+    container_name: mock-target-node
+    privileged: true
+    ports:
+      - "2222:22"
+    networks:
+      - telecom-net
+    mem_limit: 1024m 
+    cpus: 1.0
+    restart: always
+
+networks:
+  telecom-net:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  pgdata:
