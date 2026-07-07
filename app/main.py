@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
@@ -12,7 +13,8 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     # --- STARTUP ---
     # Kết nối DB
-    db.client = AsyncIOMotorClient("mongodb://localhost:27017")
+    mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+    db.client = AsyncIOMotorClient(mongodb_url)
     database = db.client["telecom_agent_db"]
     
     # Tạo Index
